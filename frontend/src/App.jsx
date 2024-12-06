@@ -8,8 +8,8 @@ import Login1 from './components/Login1';
 import Register1 from './components/Register1';
 import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
-import ForgotPassword from './components/forgotPassword';
-import ResetPassword from './components/resetPassword';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import AdminDashboard from './components/AdminDashboard';
 // import ProtectedRoute from './components/ProtectedRoute';
 import AddUser from './components/AddUser';
@@ -20,6 +20,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DownloadUsers from './components/DownloadUsers';
 import UploadUsers from './components/UploadUsers';
 import FileUpload from './components/FileUpload';
+import './components/i18n';
 
 
 function App() {
@@ -37,9 +38,9 @@ function App() {
           </ProtectedRoute>
         } /> */}
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/add" element={<AddUser />} />
-        <Route path="/admin/users/edit/:id" element={<EditUser />} />
-        <Route path="/admin/search" element={<SearchUser />} />
+        <Route path="/admin/Add" element={<AddUser />} />
+        <Route path="/admin/users/update" element={<EditUser />} />
+        <Route path="/admin/search/results" element={<SearchUser />} />
         <Route path="/admin/users" element={<UserList />} />
         <Route path="/" element={<Homepage1 />} />
         <Route path="/login" element={<Login1 />} />

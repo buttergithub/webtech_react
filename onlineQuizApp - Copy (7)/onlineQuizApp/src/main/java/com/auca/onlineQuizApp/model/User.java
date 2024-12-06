@@ -9,10 +9,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String email;
 
     private String phoneNumber;
@@ -20,14 +23,12 @@ public class User {
     private String lastName;
 
     private String profilePicture;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 20)
-    private Role role;
-
     private String resetToken;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", length = 20,nullable = false)
+    private Role role = Role.ROLE_USER ;
+    private String status = "ACTIVE";
 
     // Getters and setters
     public Long getId() {

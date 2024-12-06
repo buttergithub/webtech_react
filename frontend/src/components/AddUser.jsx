@@ -16,7 +16,7 @@ const AddUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/admin/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

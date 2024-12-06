@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,10 +33,18 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private ResetTokenRepository resetTokenRepository;
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @PostConstruct
+    public void init() {
+        addAdminUser();
+    }
 
     public Map<String, Object> getDashboardStatistics() {
         Map<String, Object> stats = new HashMap<>();
@@ -160,27 +169,34 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void addAdminUser() {
+    public void addAdminUser () {
         if (userRepository.findByUsername("admin") == null) {
-            User adminUser = new User();
-            adminUser.setUsername("admin");
-            adminUser.setPassword("12345");
-            adminUser.setEmail("uwizeyengogasandra@gmail.com");
-            adminUser.setRole(Role.ROLE_ADMIN);
-            userRepository.save(adminUser);
+            User adminUser  = new User();
+            adminUser .setUsername("admin");
+            adminUser .setPassword("1234"); // Hash the password
+            adminUser .setEmail("uwizeyengogasandra@gmail.com");
+            adminUser .setRole(Role.ROLE_ADMIN);
+            userRepository.save(adminUser );
             System.out.println("Admin user created successfully.");
         } else {
             System.out.println("Admin user already exists.");
         }
     }
 
+
+
     @Transactional
     public User createUser(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setEmail(userDTO.getEmail());
-        user.setRole(Role.valueOf(userDTO.getRole()));
+        // Convert string to Role enum correctly
+        Role userRole = userDTO.getRole() != null ?
+                Role.valueOf(userDTO.getRole().toString()) :
+                Role.ROLE_USER;
+        user.setRole(userRole);
+
         user.setStatus("ACTIVE");
         return userRepository.save(user);
     }
@@ -191,7 +207,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setRole(Role.valueOf(userDTO.getRole()));
+        user.setRole(Role.valueOf(String.valueOf(userDTO.getRole())));
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             user.setPassword(userDTO.getPassword());
         }
@@ -224,6 +240,20 @@ public class UserService {
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
+    public User authenticateUser(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        System.out.println("Found user: " + (user != null ? user.getUsername() : "null"));
+        System.out.println("Stored password: " + (user != null ? user.getPassword() : "null"));
+        System.out.println("Attempting to match password: " + password);
+
+        if (user != null && password.equals(user.getPassword())) {
+            return user;
+        }
+        return null;
+    }
+
+
 
     public void processUserUpload(MultipartFile file) throws IOException {
         List<User> users = new ArrayList<>();

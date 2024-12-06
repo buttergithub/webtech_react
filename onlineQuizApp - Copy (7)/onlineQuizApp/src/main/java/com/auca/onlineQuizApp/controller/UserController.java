@@ -1,6 +1,7 @@
 package com.auca.onlineQuizApp.controller;
 
 import com.auca.onlineQuizApp.model.User;
+import com.auca.onlineQuizApp.model.UserDTO;
 import com.auca.onlineQuizApp.service.AuditLogService;
 //import com.auca.onlineQuizApp.service.QuizService;
 import com.auca.onlineQuizApp.service.UserService;
@@ -49,10 +50,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody User loginRequest, HttpSession session) {
-        User user = userService.loginUser(loginRequest.getUsername());
+    public ResponseEntity<?> loginUser(@RequestBody UserDTO loginRequest, HttpSession session) {
+        User user = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
-        if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
+        if (user == null) {
             auditLogService.logAction("LOGIN_FAILED", loginRequest.getUsername(), "Failed login attempt");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
@@ -60,8 +61,13 @@ public class UserController {
         session.setAttribute("loggedInUser", user);
         auditLogService.logAction("LOGIN_SUCCESS", user.getUsername(), "User logged in successfully");
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("role", user.getRole());
+        response.put("username", user.getUsername());
+
         return ResponseEntity.ok(user.getRole());
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {

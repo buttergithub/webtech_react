@@ -220,7 +220,14 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100"
+      style={{
+      backgroundImage: `url(/dashboard.jpg)`,
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center'
+      }}
+    >
       {/* Previous sidebar code remains the same */}
       <div className="fixed w-64 h-screen bg-[#001C30] text-[#64CCC5]">
         <div className="flex flex-col h-full p-4">
@@ -231,7 +238,7 @@ const AdminDashboard = () => {
             <span>Add New User</span>
           </Link>
 
-          <Link to="/admin/search" className="flex items-center p-3 mb-2 hover:bg-[#176B87] rounded-lg transition-colors">
+          <Link to="/admin/search/results" className="flex items-center p-3 mb-2 hover:bg-[#176B87] rounded-lg transition-colors">
             <i className="fas fa-search mr-3"></i>
             <span>Search User</span>
           </Link>
@@ -313,7 +320,7 @@ const AdminDashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap space-x-2">
                     <Link 
-                      to={`/admin/users/edit/${user.id}`}
+                      to={'/admin/users/update'}
                       className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700"
                     >
                       Edit

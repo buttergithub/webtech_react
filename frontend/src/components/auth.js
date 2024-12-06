@@ -1,4 +1,4 @@
-import api from './api.js';
+import api from './api';
 
 
 export const checkAuth = () => {
@@ -53,7 +53,7 @@ export const authService = {
         api.delete(`/api/admin/users/${userId}`),
 
     updateUser: (userId, userData) => 
-        api.put(`/api/admin/users/${userId}`, userData),
+        api.put(`/api/admin/users/update`, userData),
 
     addUser: (userData) => 
         api.post('/api/admin/users', userData),

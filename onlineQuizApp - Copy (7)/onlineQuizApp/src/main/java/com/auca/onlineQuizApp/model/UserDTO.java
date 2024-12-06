@@ -5,7 +5,7 @@ public class UserDTO {
     private String username;
     private String password;
     private String email;
-    private String role;
+    private Role role;
     private String status;
 
     // Add getters, setters, and constructors
@@ -42,11 +42,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -63,8 +63,8 @@ public class UserDTO {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = role;
-        this.status = status;
+
+
     }
 }
 

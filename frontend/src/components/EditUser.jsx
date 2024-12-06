@@ -19,40 +19,48 @@ const EditUser = () => {
     fetchUser();
   }, [id]);
 
-  const fetchUser = async () => {
+  const fetchUser  = async () => {
     try {
-      const response = await fetch(`/api/users/${id}`);
-      const data = await response.json();
-      setFormData(data);
+        const response = await fetch(`/api/admin/users/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setFormData(data);
     } catch (error) {
-      console.error('Error fetching user:', error);
+        console.error('Error fetching user:', error);
     }
-  };
+};
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        navigate('/admin');
-      }
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
-  };
+        const response = await fetch('/api/admin/users/update', {
+            method: 'POST', // Change to POST
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // Send the form data
+        });
 
-  const handleChange = (e) => {
+        if (response.ok) {
+            navigate('/admin'); // Redirect to admin page on success
+        } else {
+            const errorData = await response.json();
+            console.error('Error updating user:', errorData);
+            // Optionally, handle error messages here
+        }
+    } catch (error) {
+        console.error('Error updating user:', error);
+    }
+};
+
+const handleChange = (e) => {
     setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
+        ...formData,
+        [e.target.name]: e.target.value
     });
-  };
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-600 to-yellow-400 py-12 px-4 sm:px-6 lg:px-8">
