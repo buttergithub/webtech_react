@@ -25,7 +25,7 @@ const Register1 = () => {
     setSuccessMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8082/api/register', formData);
+      const response = await axios.post('https://online-quiz-app-backend-v5hw.onrender.com/api/register', formData);
       if (response.status === 200) {
         setFormData({ username: '', email: '', password: '', role: '' });
         setSuccessMessage('Registration successful!');

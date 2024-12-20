@@ -16,7 +16,7 @@ const AddUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8082/api/admin/users', {
+      const response = await fetch('https://online-quiz-app-backend-v5hw.onrender.com/api/admin/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

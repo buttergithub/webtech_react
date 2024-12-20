@@ -163,7 +163,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       // Change to GET method since your controller doesn't have a POST endpoint for fetching users
-      const response = await api.get('http://localhost:8082/api/admin/users', {
+      const response = await api.get('https://online-quiz-app-backend-v5hw.onrender.com/api/admin/users', {
         params: {
           page: currentPage,
           size: pageSize
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await api.get('http://localhost:8082/api/admin/notifications');
+      const response = await api.get('https://online-quiz-app-backend-v5hw.onrender.com/api/admin/notifications');
       setNotifications(response.data);
 
     } catch (error) {
@@ -200,7 +200,7 @@ const AdminDashboard = () => {
 
   const handleSendNotification = async () => {
     try {
-      await api.post('http://localhost:8082/api/admin/notifications', notificationForm);
+      await api.post('https://online-quiz-app-backend-v5hw.onrender.com/api/admin/notifications', notificationForm);
       setNotificationForm({ title: '', message: '' });
       fetchNotifications();
     } catch (error) {
@@ -210,7 +210,7 @@ const AdminDashboard = () => {
 
   const handleMarkAsRead = async (notificationId) => {
     try {
-      await fetch(`http://localhost:8082/api/admin/notifications/${notificationId}/mark-read`, {
+      await fetch(`https://online-quiz-app-backend-v5hw.onrender.com/api/admin/notifications/${notificationId}/mark-read`, {
         method: 'PUT',
       });
       fetchNotifications();
