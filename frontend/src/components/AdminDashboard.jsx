@@ -163,7 +163,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       // Change to GET method since your controller doesn't have a POST endpoint for fetching users
-      const response = await api.get('/api/admin/users', {
+      const response = await api.get('http://localhost:8082/api/admin/users', {
         params: {
           page: currentPage,
           size: pageSize
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await api.get('/api/admin/notifications');
+      const response = await api.get('http://localhost:8082/api/admin/notifications');
       setNotifications(response.data);
 
     } catch (error) {
@@ -200,7 +200,7 @@ const AdminDashboard = () => {
 
   const handleSendNotification = async () => {
     try {
-      await api.post('/api/admin/notifications', notificationForm);
+      await api.post('http://localhost:8082/api/admin/notifications', notificationForm);
       setNotificationForm({ title: '', message: '' });
       fetchNotifications();
     } catch (error) {
@@ -210,7 +210,7 @@ const AdminDashboard = () => {
 
   const handleMarkAsRead = async (notificationId) => {
     try {
-      await fetch(`/api/admin/notifications/${notificationId}/mark-read`, {
+      await fetch(`http://localhost:8082/api/admin/notifications/${notificationId}/mark-read`, {
         method: 'PUT',
       });
       fetchNotifications();
@@ -248,7 +248,7 @@ const AdminDashboard = () => {
             <span>Download Data</span>
           </Link>
 
-          <Link to= "/files/upload" className="flex items-center p-3 mb-2 hover:bg-[#176B87] rounded-lg transition-colors">
+          <Link to= "/admin/upload/users" className="flex items-center p-3 mb-2 hover:bg-[#176B87] rounded-lg transition-colors">
             <i className="fas fa-upload mr-3"></i>
             <span>Upload Data</span>
           </Link>
@@ -320,7 +320,7 @@ const AdminDashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap space-x-2">
                     <Link 
-                      to={'/admin/users/update'}
+                      to={`/admin/users/${user.id}`}
                       className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700"
                     >
                       Edit

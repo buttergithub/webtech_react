@@ -52,8 +52,14 @@ export const authService = {
     deleteUser: (userId) => 
         api.delete(`/api/admin/users/${userId}`),
 
-    updateUser: (userId, userData) => 
-        api.put(`/api/admin/users/update`, userData),
+    updateUser: (userId, userData) => {
+        console.log('Updating user:', userId, userData); // Add this for debugging
+        return api.put(`/api/admin/users/${userId}`, userData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    },
 
     addUser: (userData) => 
         api.post('/api/admin/users', userData),

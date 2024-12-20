@@ -49,7 +49,7 @@ const UploadUsers = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/api/admin/upload/users', formData, {
+      const response = await api.post('http://localhost:8082/api/admin/upload/users', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

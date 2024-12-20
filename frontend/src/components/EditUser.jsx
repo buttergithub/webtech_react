@@ -1,6 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+// import authService from './auth';
+import api from './api';
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -12,55 +13,70 @@ const EditUser = () => {
     lastName: '',
     email: '',
     phoneNumber: '',
-    role: ''
+    role: '',
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchUser();
   }, [id]);
 
-  const fetchUser  = async () => {
+  const fetchUser = async () => {
     try {
-        const response = await fetch(`/api/admin/users/${id}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setFormData(data);
+      setIsLoading(true);
+      const response = await api.get(`/api/admin/users/${id}`);
+      const user = response.data;
+      
+      setFormData({
+        username: user.username || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phoneNumber: user.phoneNumber || '',
+        role: user.role || '',
+        password: '',
+      });
     } catch (error) {
-        console.error('Error fetching user:', error);
+      setError(`Error loading user: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setIsLoading(false);
     }
-};
+  };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-        const response = await fetch('/api/admin/users/update', {
-            method: 'POST', // Change to POST
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData), // Send the form data
-        });
-
-        if (response.ok) {
-            navigate('/admin'); // Redirect to admin page on success
-        } else {
-            const errorData = await response.json();
-            console.error('Error updating user:', errorData);
-            // Optionally, handle error messages here
-        }
-    } catch (error) {
-        console.error('Error updating user:', error);
+    
+    const dataToSubmit = { ...formData };
+    if (!dataToSubmit.password) {
+      delete dataToSubmit.password;
     }
-};
 
-const handleChange = (e) => {
-    setFormData({
-        ...formData,
-        [e.target.name]: e.target.value
-    });
-};
+    try {
+      await api.put(`/api/admin/users/${id}`, dataToSubmit);
+      navigate('/admin/users');
+    } catch (error) {
+      setError(`Update failed: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-600 to-yellow-400 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-xl p-6">
+          <p className="text-center">Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-600 to-yellow-400 py-12 px-4 sm:px-6 lg:px-8">
@@ -69,12 +85,16 @@ const handleChange = (e) => {
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
             Edit User
           </h2>
-          
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Username
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Username</label>
               <input
                 type="text"
                 name="username"
@@ -86,9 +106,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Password</label>
               <input
                 type="password"
                 name="password"
@@ -100,9 +118,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                First Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -114,9 +130,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Last Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -128,9 +142,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 name="email"
@@ -142,9 +154,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -156,9 +166,7 @@ const handleChange = (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Role</label>
               <select
                 name="role"
                 value={formData.role}
