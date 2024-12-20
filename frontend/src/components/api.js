@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const BACKEND_URL = 'https://online-quiz-app-backend-v5hw.onrender.com';
+
 const api = axios.create({
-  baseURL: '/api',  // This will work for both development and production
+  baseURL: BACKEND_URL,  // Direct connection to backend
   headers: {
     'Content-Type': 'application/json'
   },
@@ -14,8 +16,6 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  // Remove any duplicate /api in the URL if it exists
-  config.url = config.url.replace(/\/api\/api\//, '/api/');
   return config;
 });
 
