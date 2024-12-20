@@ -9,7 +9,7 @@ export default defineConfig({
         target: 'https://online-quiz-app-backend-v5hw.onrender.com',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   }
