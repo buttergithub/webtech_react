@@ -1,23 +1,25 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',  // Changed to use the Vite proxy
+  baseURL: '/api',  // This will work for both development and production
   headers: {
     'Content-Type': 'application/json'
   },
-  withCredentials: true  // Important for handling cookies/sessions
+  withCredentials: true
 });
 
-// Token interceptor - great implementation!
+// Token interceptor
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Remove any duplicate /api in the URL if it exists
+  config.url = config.url.replace(/\/api\/api\//, '/api/');
   return config;
 });
 
-// Response interceptor with authentication handling - excellent!
+// Response interceptor with authentication handling
 api.interceptors.response.use(
   response => response,
   error => {
